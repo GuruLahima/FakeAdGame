@@ -113,4 +113,10 @@ InitTestScene*.unity*
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
 Assets/readme.md
+Assets/readme.md.meta
 Assets/GDD.md
+Assets/GDD.md.meta
+Assets/Plan.md
+Assets/Plan.md.meta
+Assets/references.md
+Assets/references.md.meta
