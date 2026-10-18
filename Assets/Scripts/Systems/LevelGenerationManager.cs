@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class LevelGenerationManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class LevelGenerationManager : MonoBehaviour
     [SerializeField] private Quaternion startingRotation;
     [SerializeField] private int startingAmountOfUnits;
     [SerializeField] private int minAmountOfUnits;
+    [SerializeField] private Range spawnFluctuationRangeX;
+    [SerializeField] private Range spawnFluctuationRangeY;
 
     // parameters for spawning units in a grid
     [SerializeField] private Vector2 gridSpacing = new Vector2(1, 1);
@@ -22,7 +25,21 @@ public class LevelGenerationManager : MonoBehaviour
     [SerializeField] private float unitSpeed;
 
 
+    [Header("Animation parameters")]
+    [SerializeField] private float baseEnemyUnitAnimationSpeed;
+
+
+
     private List<GameObject> controlledUnits = new List<GameObject>();
+
+    [Serializable]
+    internal struct Range
+    {
+        public float min;
+        public float max;
+    }
+
+    // [Header("Debug parameters")]
 
     // Update is called once per frame
     void Update()
@@ -48,6 +65,7 @@ public class LevelGenerationManager : MonoBehaviour
         // PreloadGates();
     }
 
+    [ContextMenu("Load initial Units")]
     public void LoadInitialUnits()
     {
 
@@ -72,6 +90,13 @@ public class LevelGenerationManager : MonoBehaviour
 
             var newBasicUnit = SpawnBasicUnit();
 
+            // assign random animation starting point
+            newBasicUnit.GetComponent<Animator>().Play("Charge", 0, Random.Range(0f, 1f));
+
+            // change animation speed
+            newBasicUnit.GetComponent<Animator>().speed = baseEnemyUnitAnimationSpeed;
+
+
             RegisterUnitWithEnemyMovementSystem(newBasicUnit);
         }
 
@@ -92,8 +117,9 @@ public class LevelGenerationManager : MonoBehaviour
     private GameObject SpawnBasicUnit()
     {
 
-        Vector3 pos = GetSpawnPosition(GridSpawnApproach);
+        Vector3 pos = GetSpawnPosition(GridSpawnWithSmallFluctuationsSpawnApproach);
 
+        PoolManager.Instance.root = spawnTransform;
         var newBasicEnemy = PoolManager.SpawnObject(basicEnemyPrefab, pos, startingRotation);
 
         return newBasicEnemy;
@@ -125,6 +151,25 @@ public class LevelGenerationManager : MonoBehaviour
     private Vector3 GetSpawnPosition(Func<int, Vector2, Vector3> spawnGenerationApproach)
     {
         return spawnGenerationApproach(gridSize, gridSpacing);
+    }
+
+    private Vector3 GridSpawnWithSmallFluctuationsSpawnApproach(int gridSize, Vector2 gridSpacing)
+    {
+        int row = 0;
+        int collumn = 0;
+
+        row = controlledUnits.Count / gridSize;
+        collumn = controlledUnits.Count - (row * gridSize);
+
+
+        Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
+
+        // add small fluctuation to the position so it doesn't look like a grid
+        spawnPos += new Vector3(Random.Range(spawnFluctuationRangeX.min, spawnFluctuationRangeX.max), 0, Random.Range(spawnFluctuationRangeY.min, spawnFluctuationRangeY.max));
+
+        // since I expect spawnTransform to be in a horizontal center, shift the whole thing to the left for half its width
+        spawnPos -= new Vector3((float)gridSize * gridSpacing.x / 2, 0, 0);
+        return spawnPos;
     }
 
     private Vector3 GridSpawnApproach(int gridSize, Vector2 gridSpacing)

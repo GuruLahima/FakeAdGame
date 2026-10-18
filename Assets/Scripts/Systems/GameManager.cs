@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LevelGenerationManager levelGenerationManager;
+    [SerializeField] private Player playerManager;
 
 
 
@@ -54,5 +55,8 @@ public class GameManager : MonoBehaviour
     {
         levelGenerationManager.LoadInitialUnits();
         levelGenerationManager.LoadInitialGates();
+
+        playerManager.LoadInitialUnits();
+
     }
 }
