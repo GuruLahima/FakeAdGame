@@ -108,7 +108,7 @@ public class LevelGenerationManager : MonoBehaviour
     {
         foreach (GameObject go in this.controlledUnits)
         {
-            go.transform.Translate(directionOfUnitMovement.normalized * unitSpeed * Time.deltaTime);
+            go.transform.Translate(directionOfUnitMovement.normalized * unitSpeed * Time.deltaTime, Space.World);
         }
     }
 
