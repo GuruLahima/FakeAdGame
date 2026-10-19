@@ -25,11 +25,31 @@ public class Player : MonoBehaviour
 
     private List<GameObject> controlledUnits = new List<GameObject>();
 
+    [Header("Debug")]
+
+    [SerializeField] private float GetAxisSensitivity = 20f;
+
+    [SerializeField] private float GetAxisDeadZone = 0.025f;
+
+    [SerializeField] private bool GetAxisSnapValue = true;
+
+    [SerializeField] private bool GetAxisTimeScaleDependent = true;
+
     // Update is called once per frame
     void Update()
     {
+        SimpleInput.GetAxisSensitivity = GetAxisSensitivity;
+        SimpleInput.GetAxisSnapValue = GetAxisSnapValue;
+        SimpleInput.GetAxisDeadZone = GetAxisDeadZone;
+        SimpleInput.GetAxisTimeScaleDependent = GetAxisTimeScaleDependent;
+
+        Debug.Log(SimpleInput.GetAxis("Horizontal"));
         if (GameManager.Instance.GameStarted && !GameManager.Instance.GamePaused)
-            MoveUnits(joystick.xAxis.value);
+            MoveUnits(SimpleInput.GetAxis("Horizontal"));
+        // MoveUnits(Input.GetAxis("Horizontal"));
+        // MoveUnits(joystick.xAxis.value);
+
+
     }
 
 
@@ -45,12 +65,12 @@ public class Player : MonoBehaviour
 
     }
 
-    public void MoveUnits(float direction)
+    public void MoveUnits(float input)
     {
-
+        float direction = SignOf(input);
         foreach (var unit in controlledUnits)
         {
-            unit.transform.Translate(directionOfUnitMovement * unitSpeed * (SignOf(direction)) * Time.deltaTime);
+            unit.transform.Translate(directionOfUnitMovement * unitSpeed * input * Time.deltaTime);
         }
 
     }

@@ -1381,7 +1381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logStatus: 1
-  root: {fileID: 2135577129}
+  root: {fileID: 0}
 --- !u!4 &757481637
 Transform:
   m_ObjectHideFlags: 0
@@ -2312,7 +2312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   levelGenerationManager: {fileID: 1932003961}
-  playerManager: {fileID: 0}
+  playerManager: {fileID: 2019994606}
 --- !u!4 &1557235802
 Transform:
   m_ObjectHideFlags: 0
@@ -2399,7 +2399,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932003960}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf697636c6006da48830512e6d07475a, type: 3}
   m_Name: 
@@ -2490,7 +2490,11 @@ MonoBehaviour:
   horizontalAxis: Horizontal
   joystick: {fileID: 1910065501}
   directionOfUnitMovement: {x: 1, y: 0, z: 0}
-  unitSpeed: 1
+  unitSpeed: 7
+  GetAxisSensitivity: 8
+  GetAxisDeadZone: 0.025
+  GetAxisSnapValue: 0
+  GetAxisTimeScaleDependent: 1
 --- !u!1 &2035933675
 GameObject:
   m_ObjectHideFlags: 0
