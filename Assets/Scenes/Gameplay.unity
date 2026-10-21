@@ -1381,7 +1381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logStatus: 1
-  root: {fileID: 0}
+  root: {fileID: 1276544700}
 --- !u!4 &757481637
 Transform:
   m_ObjectHideFlags: 0
@@ -2313,6 +2313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   levelGenerationManager: {fileID: 1932003961}
   playerManager: {fileID: 2019994606}
+  attackingSystem: {fileID: 0}
 --- !u!4 &1557235802
 Transform:
   m_ObjectHideFlags: 0
@@ -2399,7 +2400,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932003960}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf697636c6006da48830512e6d07475a, type: 3}
   m_Name: 
@@ -2447,6 +2448,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2019994605}
   - component: {fileID: 2019994606}
+  - component: {fileID: 2019994607}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2495,6 +2497,19 @@ MonoBehaviour:
   GetAxisDeadZone: 0.025
   GetAxisSnapValue: 0
   GetAxisTimeScaleDependent: 1
+--- !u!114 &2019994607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019994604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e990481b334f6e74796551c3a0b42a85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackingSystem
+  weapon: {fileID: 11400000, guid: 360c0173faee9c74d9b183bb85b8ddf4, type: 2}
 --- !u!1 &2035933675
 GameObject:
   m_ObjectHideFlags: 0

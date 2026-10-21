@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private LevelGenerationManager levelGenerationManager;
     [SerializeField] private Player playerManager;
+    [SerializeField] private AttackingSystem attackingSystem;
 
 
 

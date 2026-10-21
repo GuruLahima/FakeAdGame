@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Events")]
+    public static Action<GameObject> UnitsListUpdate;
+
     [Header("Spawning parameters")]
     [SerializeField] private GameObject soldierPrefab;
     [SerializeField] private Transform spawnTransform;
@@ -23,7 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 directionOfUnitMovement;
     [SerializeField] private float unitSpeed;
 
-    private List<GameObject> controlledUnits = new List<GameObject>();
+    private List<GameObject> managedUnits = new List<GameObject>();
 
     [Header("Debug")]
 
@@ -43,12 +46,8 @@ public class Player : MonoBehaviour
         SimpleInput.GetAxisDeadZone = GetAxisDeadZone;
         SimpleInput.GetAxisTimeScaleDependent = GetAxisTimeScaleDependent;
 
-        Debug.Log(SimpleInput.GetAxis("Horizontal"));
         if (GameManager.Instance.GameStarted && !GameManager.Instance.GamePaused)
             MoveUnits(SimpleInput.GetAxis("Horizontal"));
-        // MoveUnits(Input.GetAxis("Horizontal"));
-        // MoveUnits(joystick.xAxis.value);
-
 
     }
 
@@ -68,7 +67,7 @@ public class Player : MonoBehaviour
     public void MoveUnits(float input)
     {
         float direction = SignOf(input);
-        foreach (var unit in controlledUnits)
+        foreach (var unit in managedUnits)
         {
             unit.transform.Translate(directionOfUnitMovement * unitSpeed * input * Time.deltaTime);
         }
@@ -89,9 +88,11 @@ public class Player : MonoBehaviour
 
     }
 
-    private void RegisterUnitWithMovementSystem(GameObject gameObject)
+    private void RegisterUnitWithMovementSystem(GameObject go)
     {
-        controlledUnits.Add(gameObject);
+        managedUnits.Add(go);
+
+        UnitsListUpdate?.Invoke(go);
     }
 
     private GameObject SpawnBasicUnit()
@@ -115,8 +116,8 @@ public class Player : MonoBehaviour
         int row = 0;
         int collumn = 0;
 
-        row = controlledUnits.Count / gridSize;
-        collumn = controlledUnits.Count - (row * gridSize);
+        row = managedUnits.Count / gridSize;
+        collumn = managedUnits.Count - (row * gridSize);
 
 
         Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
