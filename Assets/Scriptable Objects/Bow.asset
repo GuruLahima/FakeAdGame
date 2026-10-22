@@ -17,5 +17,14 @@ MonoBehaviour:
   localPosition: {x: 0.28, y: 1.08, z: 1.28}
   localRotation: {x: 0, y: 0, z: 0, w: 1}
   fireFX: {fileID: 0}
+  fireFX_orientation:
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
   hitFX: {fileID: 0}
-  travelFX: {fileID: 0}
+  hitFX_orientation:
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  projectileFX: {fileID: 2345293759298287618, guid: b8c809744021ed349b9a5c64e8d523d9, type: 3}
+  projectileFX_localOrientation:
+    position: {x: 0, y: 0, z: 1.13}
+    rotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
