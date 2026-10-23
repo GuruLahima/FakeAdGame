@@ -915,6 +915,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 379683675}
   m_CullTransparentMesh: 1
+--- !u!1 &414633584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 414633585}
+  - component: {fileID: 414633586}
+  m_Layer: 0
+  m_Name: AttackingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &414633585
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414633584}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1776753058}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &414633586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414633584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e990481b334f6e74796551c3a0b42a85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackingSystem
+  weapon: {fileID: 11400000, guid: 360c0173faee9c74d9b183bb85b8ddf4, type: 2}
+  projectilesSpawnTransform: {fileID: 1346390381}
+  projectileMovementDirection: {x: 0, y: 0, z: 1}
+  levelGenerationManager: {fileID: 1932003961}
+  recycleDistance: 35.3
+  recycler_color: {r: 0, g: 0.07918298, b: 1, a: 0.35686275}
+  recycler_label_pos: {x: -4.89, y: 3.38}
+  recycler_label_text: Recycler
+  recycler_box_pos: {x: 0, y: 1}
+  recycler_box_size: {x: 12, y: 2, z: 0.1}
 --- !u!1 &433168928
 GameObject:
   m_ObjectHideFlags: 0
@@ -1380,7 +1434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 430d968e63581624e84fc43c08982663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logStatus: 1
+  logStatus: 0
   root: {fileID: 1276544700}
 --- !u!4 &757481637
 Transform:
@@ -1391,7 +1445,7 @@ Transform:
   m_GameObject: {fileID: 757481635}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -398.73715, y: -702.14777, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2354,7 +2408,7 @@ Transform:
   m_GameObject: {fileID: 1557235800}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -398.73715, y: -702.14777, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2385,7 +2439,7 @@ Transform:
   m_GameObject: {fileID: 1776753057}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 398.73715, y: 702.14777, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2394,6 +2448,7 @@ Transform:
   - {fileID: 1932003962}
   - {fileID: 2019994605}
   - {fileID: 2035933678}
+  - {fileID: 414633585}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1910065501 stripped
@@ -2423,7 +2478,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1932003961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2438,7 +2493,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelGenerationManager
   gate: {fileID: 0}
   basicEnemyPrefab: {fileID: 3182766873025306390, guid: 92de952d2f349984587137dce144b181, type: 3}
+  basicEnemyRadius: 0.685
   bossEnemyPrefab: {fileID: 4865814476456284693, guid: de0869ede55644144b73153edfb0e52d, type: 3}
+  bossEnemyRadius: 0
   spawnTransform: {fileID: 2135577129}
   startingRotation: {x: 0, y: -1, z: 0, w: -0.00000004371139}
   startingAmountOfUnits: 1000
@@ -2452,8 +2509,10 @@ MonoBehaviour:
   gridSpacing: {x: 1, y: 0.5}
   gridSize: 10
   directionOfUnitMovement: {x: 0, y: 0, z: -1}
-  unitSpeed: 2
+  unitSpeed: 0
   baseEnemyUnitAnimationSpeed: 0.5
+  unitBase_color: {r: 0.9433962, g: 0.543842, b: 0.13794944, a: 0.69411767}
+  unitBase_box_size: {x: 1, y: 1, z: 1.37}
 --- !u!4 &1932003962
 Transform:
   m_ObjectHideFlags: 0
@@ -2479,7 +2538,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2019994605}
   - component: {fileID: 2019994606}
-  - component: {fileID: 2019994607}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2496,7 +2554,7 @@ Transform:
   m_GameObject: {fileID: 2019994604}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -398.73715, y: -702.14777, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2528,20 +2586,6 @@ MonoBehaviour:
   GetAxisDeadZone: 0.025
   GetAxisSnapValue: 0
   GetAxisTimeScaleDependent: 1
---- !u!114 &2019994607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019994604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e990481b334f6e74796551c3a0b42a85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AttackingSystem
-  weapon: {fileID: 11400000, guid: 360c0173faee9c74d9b183bb85b8ddf4, type: 2}
-  projectilesSpawnTransform: {fileID: 1346390381}
 --- !u!1 &2035933675
 GameObject:
   m_ObjectHideFlags: 0
@@ -2604,7 +2648,7 @@ Transform:
   m_GameObject: {fileID: 2035933675}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -398.73715, y: -702.14777, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2737,7 +2781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2135577129
 Transform:
   m_ObjectHideFlags: 0

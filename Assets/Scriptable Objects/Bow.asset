@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bow
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   fireRate: 1
+  projectileSpeed: 5
   model: {fileID: 3190845877741418906, guid: fd351d458ff2c8141a3f1b693711b3c8, type: 3}
   localPosition: {x: 0.28, y: 1.08, z: 1.28}
   localRotation: {x: 0, y: 0, z: 0, w: 1}

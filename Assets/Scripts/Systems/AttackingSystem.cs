@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
 public class AttackingSystem : MonoBehaviour
 {
     /// <summary>
@@ -12,20 +12,18 @@ public class AttackingSystem : MonoBehaviour
     [SerializeField] private Weapon weapon;
     [SerializeField] private Transform projectilesSpawnTransform;
     [SerializeField] private Vector3 projectileMovementDirection;
+    [SerializeField] private LevelGenerationManager levelGenerationManager;
 
-
+    [SerializeField] public float recycleDistance;
 
     private List<GameObject> managedWeaponInstances = new List<GameObject>();
     private List<GameObject> managedProjectileInstances = new List<GameObject>();
-    private Player player;
     private float fireRateTimer;
 
     #region unity callbacks
 
     private void Start()
     {
-
-        player = GetComponent<Player>();
         OnWeaponUpdated();
     }
 
@@ -45,7 +43,8 @@ public class AttackingSystem : MonoBehaviour
         {
             ShootFromAllUnits();
             MoveProjectiles();
-            // ScanForHits();
+            ScanForHits();
+            RecycleProjectiles();
         }
 
     }
@@ -110,6 +109,67 @@ public class AttackingSystem : MonoBehaviour
         }
 
     }
+
+    private void ScanForHits()
+    {
+        GameObject unitHit;
+        for (int i = 0; i < managedProjectileInstances.Count; i++)
+        {
+            var projectile = managedProjectileInstances[i];
+
+            if (levelGenerationManager.IsUnitHit(projectile.transform.position, out unitHit))
+            {
+                levelGenerationManager.KillUnit(unitHit);
+                RecycleProjectile(projectile);
+                i--;
+
+            }
+        }
+    }
+
+    private void RecycleProjectiles()
+    {
+
+        for (int i = 0; i < managedProjectileInstances.Count; i++)
+        {
+
+            if (managedProjectileInstances[i].transform.position.z >= recycleDistance)
+            {
+                RecycleProjectile(managedProjectileInstances[i]);
+                i--;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    private void RecycleProjectile(GameObject projectile)
+    {
+        PoolManager.ReleaseObject(projectile);
+        managedProjectileInstances.Remove(projectile);
+
+        Debug.Log("recycled a projectile");
+
+    }
+
+#if UNITY_EDITOR
+    [Header("Debugging stuff")]
+    [SerializeField] private Color recycler_color;
+    [SerializeField] private Vector2 recycler_label_pos;
+    [SerializeField] private string recycler_label_text;
+    [SerializeField] private Vector2 recycler_box_pos;
+    [SerializeField] private Vector3 recycler_box_size;
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = recycler_color;
+        Handles.Label(new Vector3(recycler_label_pos.x, recycler_label_pos.y, recycleDistance), recycler_label_text);
+        Gizmos.DrawCube(new Vector3(recycler_box_pos.x, recycler_box_pos.y, recycleDistance), new Vector3(recycler_box_size.x, recycler_box_size.y, recycler_box_size.z));
+
+    }
+#endif
 
     #endregion
 }

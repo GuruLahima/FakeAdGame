@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,7 +9,9 @@ public class LevelGenerationManager : MonoBehaviour
     [Header("Spawning parameters")]
     [SerializeField] private GameObject gate;
     [SerializeField] private GameObject basicEnemyPrefab;
+    [SerializeField] private float basicEnemyRadius;
     [SerializeField] private GameObject bossEnemyPrefab;
+    [SerializeField] private float bossEnemyRadius;
     [SerializeField] private Transform spawnTransform;
     [SerializeField] private Quaternion startingRotation;
     [SerializeField] private int startingAmountOfUnits;
@@ -30,7 +33,7 @@ public class LevelGenerationManager : MonoBehaviour
 
 
 
-    private List<GameObject> controlledUnits = new List<GameObject>();
+    private List<GameObject> managedUnits = new List<GameObject>();
 
     [Serializable]
     internal struct Range
@@ -48,8 +51,6 @@ public class LevelGenerationManager : MonoBehaviour
         if (GameManager.Instance.GameStarted && !GameManager.Instance.GamePaused)
         {
             UnitSpawning();
-
-            UnitLifecycle();
 
             UnitMovement();
 
@@ -78,6 +79,29 @@ public class LevelGenerationManager : MonoBehaviour
         // throw new NotImplementedException();
     }
 
+    public bool IsUnitHit(Vector3 projectilePos, out GameObject unitHit)
+    {
+
+        foreach (var unit in managedUnits)
+        {
+            if (Vector2.Distance(new Vector2(projectilePos.x, projectilePos.z), new Vector2(unit.transform.position.x, unit.transform.position.z)) <= basicEnemyRadius)
+            {
+                unitHit = unit;
+                return true;
+            }
+
+        }
+
+        unitHit = null;
+        return false;
+    }
+
+    public void KillUnit(GameObject unitToKill)
+    {
+        managedUnits.Remove(unitToKill);
+        PoolManager.ReleaseObject(unitToKill);
+    }
+
     #endregion
 
     #region private methods
@@ -85,7 +109,7 @@ public class LevelGenerationManager : MonoBehaviour
 
     private void UnitSpawning()
     {
-        while (controlledUnits.Count < minAmountOfUnits)
+        while (managedUnits.Count < minAmountOfUnits)
         {
 
             var newBasicUnit = SpawnBasicUnit();
@@ -102,18 +126,6 @@ public class LevelGenerationManager : MonoBehaviour
 
     }
 
-    private void UnitLifecycle()
-    {
-        foreach (var unit in controlledUnits)
-        {
-            if (!unit.gameObject.activeSelf)
-            {
-
-            }
-
-        }
-    }
-
     private GameObject SpawnBasicUnit()
     {
 
@@ -127,12 +139,12 @@ public class LevelGenerationManager : MonoBehaviour
 
     private void RegisterUnitWithEnemyMovementSystem(GameObject gameObject)
     {
-        controlledUnits.Add(gameObject);
+        managedUnits.Add(gameObject);
     }
 
     private void UnitMovement()
     {
-        foreach (GameObject go in this.controlledUnits)
+        foreach (GameObject go in this.managedUnits)
         {
             go.transform.Translate(directionOfUnitMovement.normalized * unitSpeed * Time.deltaTime, Space.World);
         }
@@ -158,8 +170,8 @@ public class LevelGenerationManager : MonoBehaviour
         int row = 0;
         int collumn = 0;
 
-        row = controlledUnits.Count / gridSize;
-        collumn = controlledUnits.Count - (row * gridSize);
+        row = managedUnits.Count / gridSize;
+        collumn = managedUnits.Count - (row * gridSize);
 
 
         Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
@@ -177,8 +189,8 @@ public class LevelGenerationManager : MonoBehaviour
         int row = 0;
         int collumn = 0;
 
-        row = controlledUnits.Count / gridSize;
-        collumn = controlledUnits.Count - (row * gridSize);
+        row = managedUnits.Count / gridSize;
+        collumn = managedUnits.Count - (row * gridSize);
 
 
         Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
@@ -188,4 +200,19 @@ public class LevelGenerationManager : MonoBehaviour
     }
 
     #endregion
+
+#if UNITY_EDITOR
+    [Header("Debugging stuff")]
+    [SerializeField] private Color unitBase_color;
+    [SerializeField] private Vector3 unitBase_box_size;
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = unitBase_color;
+        foreach (var unit in managedUnits)
+        {
+            Gizmos.DrawWireCube(unit.transform.position, unitBase_box_size);
+        }
+    }
+#endif
 }
