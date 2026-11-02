@@ -21,7 +21,7 @@ public class LevelGenerationManager : MonoBehaviour
 
     // parameters for spawning units in a grid
     [SerializeField] private Vector2 gridSpacing = new Vector2(1, 1);
-    [SerializeField] private int gridSize = 4;
+    [SerializeField] private int collumnCount = 4;
 
     [Header("Movement parameters")]
     [SerializeField] private Vector3 directionOfUnitMovement;
@@ -34,6 +34,8 @@ public class LevelGenerationManager : MonoBehaviour
 
 
     private List<GameObject> managedUnits = new List<GameObject>();
+    private int collumnIterator;
+    private Transform lastEnemyUnitSpawned;
 
     [Serializable]
     internal struct Range
@@ -69,7 +71,7 @@ public class LevelGenerationManager : MonoBehaviour
     [ContextMenu("Load initial Units")]
     public void LoadInitialUnits()
     {
-
+        lastEnemyUnitSpawned = spawnTransform;
         UnitSpawning();
 
     }
@@ -162,40 +164,50 @@ public class LevelGenerationManager : MonoBehaviour
 
     private Vector3 GetSpawnPosition(Func<int, Vector2, Vector3> spawnGenerationApproach)
     {
-        return spawnGenerationApproach(gridSize, gridSpacing);
+        return spawnGenerationApproach(collumnCount, gridSpacing);
     }
 
-    private Vector3 GridSpawnWithSmallFluctuationsSpawnApproach(int gridSize, Vector2 gridSpacing)
+    private Vector3 GridSpawnWithSmallFluctuationsSpawnApproach(int collumnCount, Vector2 gridSpacing)
     {
-        int row = 0;
         int collumn = 0;
 
-        row = managedUnits.Count / gridSize;
-        collumn = managedUnits.Count - (row * gridSize);
+
+        collumnIterator = collumnIterator % collumnCount;
+        collumn = collumnIterator;
+        collumnIterator++;
 
 
-        Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
+        Vector3 spawnPos = new Vector3(collumn * gridSpacing.x, 0, lastEnemyUnitSpawned.position.z + gridSpacing.y);
+
+        // needed for math to spawn new units right behind the last units since they will be moving
+        if (collumn == 0 && managedUnits.Count > 0)
+            lastEnemyUnitSpawned = managedUnits[^1].transform;
 
         // add small fluctuation to the position so it doesn't look like a grid
         spawnPos += new Vector3(Random.Range(spawnFluctuationRangeX.min, spawnFluctuationRangeX.max), 0, Random.Range(spawnFluctuationRangeY.min, spawnFluctuationRangeY.max));
 
         // since I expect spawnTransform to be in a horizontal center, shift the whole thing to the left for half its width
-        spawnPos -= new Vector3((float)gridSize * gridSpacing.x / 2, 0, 0);
+        spawnPos -= new Vector3((float)collumnCount * gridSpacing.x / 2, 0, 0);
         return spawnPos;
     }
 
-    private Vector3 GridSpawnApproach(int gridSize, Vector2 gridSpacing)
+    private Vector3 GridSpawnApproach(int collumnCount, Vector2 gridSpacing)
     {
-        int row = 0;
         int collumn = 0;
 
-        row = managedUnits.Count / gridSize;
-        collumn = managedUnits.Count - (row * gridSize);
+        collumnIterator = collumnIterator % collumnCount;
+        collumn = collumnIterator;
 
+        collumnIterator++;
 
-        Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
+        Vector3 spawnPos = new Vector3(collumn * gridSpacing.x, 0, lastEnemyUnitSpawned.position.z + gridSpacing.y);
+
+        // needed for math to spawn new units right behind the last units since they will be moving
+        if (collumn == 0 && managedUnits.Count > 0)
+            lastEnemyUnitSpawned = managedUnits[^1].transform;
+
         // since I expect spawnTransform to be in a horizontal center, shift the whole thing to the left for half its width
-        spawnPos -= new Vector3((float)gridSize * gridSpacing.x / 2, 0, 0);
+        spawnPos -= new Vector3((float)collumnCount * gridSpacing.x / 2, 0, 0);
         return spawnPos;
     }
 

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using SimpleInputNamespace;
+using UnityEditor;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class Player : MonoBehaviour
 {
     [Header("Events")]
@@ -25,6 +27,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Joystick joystick;
     [SerializeField] private Vector3 directionOfUnitMovement;
     [SerializeField] private float unitSpeed;
+    [SerializeField] private Vector2 movementLimits;
+    [SerializeField] public Vector3 unitsCenter;
 
     private List<GameObject> managedUnits = new List<GameObject>();
 
@@ -46,7 +50,7 @@ public class Player : MonoBehaviour
         SimpleInput.GetAxisDeadZone = GetAxisDeadZone;
         SimpleInput.GetAxisTimeScaleDependent = GetAxisTimeScaleDependent;
 
-        if (GameManager.Instance.GameStarted && !GameManager.Instance.GamePaused)
+        if (GameManager.Instance && GameManager.Instance.GameStarted && !GameManager.Instance.GamePaused)
             MoveUnits(SimpleInput.GetAxis("Horizontal"));
 
     }
@@ -120,7 +124,7 @@ public class Player : MonoBehaviour
         collumn = managedUnits.Count - (row * gridSize);
 
 
-        Vector3 spawnPos = spawnTransform.position + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
+        Vector3 spawnPos = unitsCenter + new Vector3(collumn * gridSpacing.x, 0, row * gridSpacing.y);
 
         // since I expect spawnTransform to be in a horizontal center, shift the whole thing to the left for half its width
         spawnPos -= new Vector3((float)gridSize * gridSpacing.x / 2, 0, 0);
@@ -135,5 +139,56 @@ public class Player : MonoBehaviour
         return Mathf.Sign(num);
     }
 
+
+#if UNITY_EDITOR
+    [Header("Debugging stuff")]
+    [SerializeField] private Color unitsCenter_color;
+    [SerializeField] private Vector3 unitsCenter_label_offset;
+    [SerializeField] private int unitsCenter_label_size;
+    [SerializeField] private string unitsCenter_label_text;
+    [SerializeField] private Vector3 unitsCenterBox_size;
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = unitsCenter_color;
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.fontSize = unitsCenter_label_size;
+        Handles.Label(unitsCenter + unitsCenter_label_offset, unitsCenter_label_text, style);
+        Gizmos.DrawCube(unitsCenter, new Vector3(unitsCenterBox_size.x, unitsCenterBox_size.y, unitsCenterBox_size.z));
+    }
+
+#endif
+
     #endregion
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(Player))]
+public class PlayerDebuggerEditor : Editor
+{
+    // Draw lines between a chosen GameObject
+    // and a selection of added GameObjects
+
+    void OnSceneGUI()
+    {
+        // Get the chosen GameObject
+        Player t = target as Player;
+
+        if (t == null)
+            return;
+
+        EditorGUI.BeginChangeCheck();
+        // Grab the center of the parent
+        Vector3 newTargetPosition = Handles.PositionHandle(t.unitsCenter, Quaternion.identity);
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(t, "Change Look At Target Position");
+            t.unitsCenter = newTargetPosition;
+        }
+
+
+
+    }
+
+}
+#endif
